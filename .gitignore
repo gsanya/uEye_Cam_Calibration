@@ -3,3 +3,9 @@
 ################################################################################
 
 /.vs/uEye_Cam_Calibration/v14
+/bin/intermediets/Release
+*.iobj
+*.pdb
+*.ipdb
+/uEye_Cam_Calibration.VC.db
+/uEye_Cam_Calibration.VC.VC.opendb
