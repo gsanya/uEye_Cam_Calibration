@@ -12,8 +12,9 @@
 int main()
 {
 	int numBoards = 10;
-	int numCornersHor =4;
-	int numCornersVer =5;
+	//inner corners
+	int numCornersHor =8;
+	int numCornersVer =6;
 	double squareSizeInmm =30;
 
 	int numSquares = numCornersHor * numCornersVer;
@@ -67,10 +68,10 @@ int main()
 		cv::imshow("win1", image);
 		cv::imshow("win2", gray_image);
 		int key = cv::waitKey(1);
-		//image = cv::imread(fileNames[i], CV_LOAD_IMAGE_COLOR);
+		image = cv::imread(fileNames[i], CV_LOAD_IMAGE_COLOR);
 		if (key == 27)
 			return 0;
-		if (key == ' ' && found != 0)
+		if (found)
 		{
 			image_points.push_back(corners);
 			object_points.push_back(obj);
@@ -80,7 +81,17 @@ int main()
 		}
 		i++;
 	}
+	cv::destroyWindow("win1");
+	cv::destroyWindow("win2");
 
+	cv::Mat intrinsic = cv::Mat(3, 3, CV_32FC1);
+	cv::Mat distCoeffs;
+	std::vector<cv::Mat> rvecs;
+	std::vector<cv::Mat> tvecs;
 
+	intrinsic.ptr<float>(0)[0] = 1;
+	intrinsic.ptr<float>(1)[1] = 1;
+
+	cv::calibrateCamera(object_points, image_points, image.size(), intrinsic, distCoeffs, rvecs, tvecs);
 
 }
