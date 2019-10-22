@@ -9,3 +9,12 @@
 *.ipdb
 /uEye_Cam_Calibration.VC.db
 /uEye_Cam_Calibration.VC.VC.opendb
+/.vs/uEye_Cam_Calibration/v15/ipch/AutoPCH/ef9c44de74cdc437
+/.vs/uEye_Cam_Calibration/v15
+/.vs/ProjectSettings.json
+/.vs
+*.exe
+*.ilk
+/bin/intermediets/Debug
+/Test2_Calibration/x64/Debug
+/bin/Debug
