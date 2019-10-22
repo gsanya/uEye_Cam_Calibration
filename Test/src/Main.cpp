@@ -33,7 +33,6 @@ int main()
 		// Create an image and grab a frame
 		cv::Mat current_image(2048, 2048, CV_8UC3);
 		getFrame(&hCam, 2048, 2048, current_image);
-		cv::Mat imtoshow(512, 512, CV_8UC3);
 		cv::resize(current_image, current_image, cv::Size(), 1.0f / 4.0f, 1.0f / 4.0f, cv::INTER_LANCZOS4);
 		// PERFORM YOUR OPENCV PROCESSING HERE!
 		// Visualise the data
