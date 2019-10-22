@@ -13,8 +13,8 @@ int main()
 {
 	int numBoards = 10;
 	//inner corners
-	int numCornersHor =8;
-	int numCornersVer =6;
+	int numCornersHor =25;
+	int numCornersVer = 9;
 	double squareSizeInmm =30;
 
 	int numSquares = numCornersHor * numCornersVer;
@@ -40,10 +40,10 @@ int main()
 	std::stringstream ss;
 	for (int i = 0; i < 30; i++)
 	{
-		if (i < 9)
-			ss << "D:/Users/Sanya/Documents/SZTAKI/ORB_DATA/AGZ/MAV Images Calib/Calibration_Image_0" << i+1<<".png";
+		if(i<9)
+			ss << "D:/Users/Sanya/Pictures/uEye/0" << i + 1 << ".png";
 		else
-			ss << "D:/Users/Sanya/Documents/SZTAKI/ORB_DATA/AGZ/MAV Images Calib/Calibration_Image_" << i+1 << ".png";
+			ss << "D:/Users/Sanya/Pictures/uEye/" << i + 1 << ".png";
 		fileNames.push_back(ss.str());
 		ss.str("");
 		std::cout << fileNames[i] << std::endl;
@@ -76,13 +76,12 @@ int main()
 			image_points.push_back(corners);
 			object_points.push_back(obj);
 
-			std::cout<<"Snap stored!";
+			std::cout<<"Snap stored!"<<std::endl;
 			successes++;
 		}
 		i++;
 	}
-	cv::destroyWindow("win1");
-	cv::destroyWindow("win2");
+
 
 	cv::Mat intrinsic = cv::Mat(3, 3, CV_32FC1);
 	cv::Mat distCoeffs;
@@ -93,5 +92,15 @@ int main()
 	intrinsic.ptr<float>(1)[1] = 1;
 
 	cv::calibrateCamera(object_points, image_points, image.size(), intrinsic, distCoeffs, rvecs, tvecs);
+	std::cout << "intrinsics:\n" << intrinsic << std::endl;
+	std::cout << "distCoeffs:\n" << distCoeffs << std::endl;
+	std::cout << "rvecs:\n" << rvecs[0] << std::endl;
+	std::cout << "tvecs:\n[" << tvecs[0] << std::endl;
 
+
+
+	cv::waitKey(-1);
+
+	cv::destroyWindow("win1");
+	cv::destroyWindow("win2");
 }

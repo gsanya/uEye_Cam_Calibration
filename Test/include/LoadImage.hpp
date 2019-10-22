@@ -9,3 +9,4 @@
 
 void initializeCameraInterface(HIDS* hCam_internal);
 void getFrame(HIDS* hCam, int width, int height, cv::Mat& mat);
+void coutError(int Error);

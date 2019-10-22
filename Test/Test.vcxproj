@@ -102,7 +102,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)../../../External/opencv/build/x64/vc15/lib;$(ProjectDir)../../../External/opencv/build/x64/vc15/bin;D:/Program Files/IDS/uEye/Develop/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world340.lib;uEye_api_64.lib;ueye_tools_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world340d.lib;uEye_api_64.lib;ueye_tools_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
     </Link>
