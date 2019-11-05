@@ -56,6 +56,25 @@ int main()
 		i++;
 	}
 
+
+	while (true)
+	{
+		// Create an image and grab a frame
+		cv::Mat current_image(2048, 2048, CV_8UC3);
+		getFrame(&hCam, 2048, 2048, current_image);
+		cv::Mat imtoshow;
+		cv::resize(current_image, imtoshow, cv::Size(), 1.0f / 2.0f, 1.0f / 2.0f, cv::INTER_LANCZOS4);
+		// PERFORM YOUR OPENCV PROCESSING HERE!
+		// Visualise the data
+
+
+		cv::imshow("test_interface", imtoshow);
+
+		// Check if we need to stop processing
+		if ((int)cv::waitKey(10) >= 0) {
+			break;
+		}
+	}
 	// Release the camera again
 	is_ExitCamera(hCam);
 
