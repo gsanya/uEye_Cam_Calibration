@@ -1,8 +1,11 @@
 #pragma once
+#pragma warning(disable : 4996) //_CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
 #include <stdio.h>
 #include <stddef.h>
+#include <time.h>
+#include <stdlib.h>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -22,7 +25,13 @@ int main()
 	// ---------------------------------------------------------------------------------------------------------------
 	// START BY CONFIGURING THE INTERFACE WITH THE UEYE CAMERA
 	// ---------------------------------------------------------------------------------------------------------------
-
+	std::stringstream ss, folder;
+	time_t t = time(NULL);
+	struct tm  curtime = *localtime(&t);
+	ss << "md D:\\Users\\Sanya\\Pictures\\uEye\\" << std::put_time(&curtime, "%d-%m-%Y_%Hh%Mm%Ss");
+	folder<<"D:\\Users\\Sanya\\Pictures\\uEye\\" << std::put_time(&curtime, "%d-%m-%Y_%Hh%Mm%Ss");
+	std::cout << std::endl<< ss.str();
+	system((ss.str()).c_str());
 
 	// Camera initialisation
 	// Index 1 means taking the USB camera
@@ -73,6 +82,7 @@ int main()
 	std::vector<cv::Mat> errorsqrvec;
 
 	int key = 0;
+	bool first = true;
 	// ---------------------------------------------------------------------------------------------------------------
 	// CAPTURE DATA AND PROCESS
 	// ---------------------------------------------------------------------------------------------------------------
@@ -87,7 +97,11 @@ int main()
 
 			cv::cvtColor(current_image, gray_image, CV_BGR2GRAY);
 			ImshowResize(current_image, resizeFactor, "RGB captured image");
-
+			if (first)
+			{
+				cv::waitKey(0);
+				first = false;
+			}
 			bool found = cv::findChessboardCorners(gray_image, board_size, corners, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 			if (found)
 			{
@@ -107,6 +121,13 @@ int main()
 
 					std::cout << successes + 1 << "/" << numBoards << "            \r";
 					successes++;
+					std::stringstream ss;
+					ss.str("");
+					if (successes < 10)
+						ss << folder.str() << "/0" << successes << ".png";
+					else
+						ss << folder.str() <<"/" << successes << ".png";
+					cv::imwrite(ss.str(), current_image);	
 				}
 			}
 			else

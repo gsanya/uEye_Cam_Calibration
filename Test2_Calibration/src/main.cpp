@@ -9,12 +9,14 @@
 #include <opencv2/highgui/highgui.hpp>
 
 
+void ImshowResize(cv::Mat image, float resizefact, std::string windowname);
+
 int main()
 {
-	int numBoards = 10;
+	int numBoards = 11;
 	//inner corners
-	int numCornersHor =25;
-	int numCornersVer = 9;
+	int numCornersHor =6;
+	int numCornersVer = 4;
 	double squareSizeInmm =30;
 
 	int numSquares = numCornersHor * numCornersVer;
@@ -38,35 +40,31 @@ int main()
 	//I have 30 pictures
 	fileNames.reserve(30);
 	std::stringstream ss;
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		if(i<9)
-			ss << "D:/Users/Sanya/Pictures/uEye/0" << i + 1 << ".png";
+			ss << "D:/Users/Sanya/Pictures/uEye/12-11-2019_11h14m24s/0" << i + 1 << ".png";
 		else
-			ss << "D:/Users/Sanya/Pictures/uEye/" << i + 1 << ".png";
+			ss << "D:/Users/Sanya/Pictures/uEye/12-11-2019_11h14m24s/" << i + 1 << ".png";
 		fileNames.push_back(ss.str());
 		ss.str("");
 		std::cout << fileNames[i] << std::endl;
 	}
-	cv::namedWindow("win1");
-	cv::namedWindow("win2");
+	cv::namedWindow("image");
+	cv::namedWindow("gray_image");
 	image = cv::imread(fileNames[0], CV_LOAD_IMAGE_COLOR);
-	int i = 1;
-	while (successes < numBoards)
+	int i = 0;
+	while (i < numBoards)
 	{
 		cv::cvtColor(image, gray_image, CV_BGR2GRAY);
-		cv::imshow("win1", image);
-		cv::waitKey(1);
-		cv::imshow("win2", gray_image);
-		cv::waitKey(1);
+		ImshowResize(image, 0.5, "image");
 		bool found = cv::findChessboardCorners(gray_image, board_sz, corners, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 		if (found)
 		{
 			cv::cornerSubPix(gray_image, corners, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
 			cv::drawChessboardCorners(gray_image, board_sz, corners, found);
 		}
-		cv::imshow("win1", image);
-		cv::imshow("win2", gray_image);
+		ImshowResize(gray_image, 0.5, "gray_image");
 		int key = cv::waitKey(1);
 		image = cv::imread(fileNames[i], CV_LOAD_IMAGE_COLOR);
 		if (key == 27)
@@ -99,8 +97,16 @@ int main()
 
 
 
-	cv::waitKey(-1);
+	cv::waitKey(0);
 
-	cv::destroyWindow("win1");
-	cv::destroyWindow("win2");
+	cv::destroyWindow("image");
+	cv::destroyWindow("gray_image");
+}
+
+void ImshowResize(cv::Mat image, float resizefact, std::string windowname)
+{
+	cv::Mat imtoshow;
+	cv::resize(image, imtoshow, cv::Size(), resizefact, resizefact, cv::INTER_LANCZOS4);
+	cv::imshow(windowname, imtoshow);
+	cv::waitKey(1);
 }
