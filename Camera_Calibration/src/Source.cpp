@@ -18,6 +18,7 @@
 void ImshowResize(cv::Mat image, float resizefact, std::string windowname);
 void Mean(cv::Mat Means, std::vector<cv::Mat> rvecs);
 void StandardDeviation(cv::Mat SDs, std::vector<cv::Mat> vecs, cv::Mat Means);
+std::vector<cv::Point3f> loadCorners(std::string input);
 
 
 int main()
@@ -282,9 +283,37 @@ void StandardDeviation(cv::Mat SDs, std::vector<cv::Mat> vecs, cv::Mat Means)
 	}
 }
 
-void loadCorners(std::vector<cv::Point3f> corners, std::ifstream input)
+std::vector<cv::Point3f> loadCorners(std::string input)
 {
 	//TODO: write this function
-	
+	std::vector<cv::Point3f> pvector;
+	std::ifstream inputFile;
+	inputFile.open(input);
+	std::string line;
+	std::string delimiter = ",";
+	if (inputFile.is_open())
+	{
+		while (std::getline(inputFile, line))
+		{
+			//end of x substring
+			line = line.erase(line.find('['), 1);
+			line = line.erase(line.find(']'), 1);
+			int pos1 = line.find(delimiter);
+			std::string x = line.substr(0, pos1);
+			//end of y substring
+			int pos2 = line.find(delimiter, pos1 + 1);
+			std::string y = line.substr(pos1 + 2, pos2 - pos1 - 2);
+			//end of z substring
+			std::string z = line.substr(pos2 + 2, line.length() - pos2 - 2);
 
+			float fx = std::stof(x);
+			float fy = std::stof(y);
+			float fz = std::stof(z);
+			cv::Point3f point = cv::Point3f(fx, fy, fz);
+			pvector.push_back(point);
+			std::cout << line << '\n';
+		}
+		inputFile.close();
+	}
+	return pvector;
 }

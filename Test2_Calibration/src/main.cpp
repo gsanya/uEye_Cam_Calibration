@@ -10,6 +10,7 @@
 
 
 void ImshowResize(cv::Mat image, float resizefact, std::string windowname);
+std::vector<cv::Point3f> loadCorners(std::string input);
 
 int main()
 {
@@ -31,7 +32,7 @@ int main()
 	cv::Mat image;
 	cv::Mat gray_image;
 
-	std::vector<cv::Point3f> obj;
+	std::vector<cv::Point3f> obj= loadCorners("D:/Users/Sanya/Drive/BME/BME_Mechatronika_MSc/2_semester/Projektfeladat/ueye_project/boardcoordinates.txt");
 	for (int j = 0; j < numSquares; j++)
 		obj.push_back(cv::Point3f(squareSizeInmm*(j / numCornersHor), squareSizeInmm*(j%numCornersHor), 0.0f));
 
@@ -109,4 +110,39 @@ void ImshowResize(cv::Mat image, float resizefact, std::string windowname)
 	cv::resize(image, imtoshow, cv::Size(), resizefact, resizefact, cv::INTER_LANCZOS4);
 	cv::imshow(windowname, imtoshow);
 	cv::waitKey(1);
+}
+
+std::vector<cv::Point3f> loadCorners(std::string input)
+{
+	//TODO: write this function
+	std::vector<cv::Point3f> pvector;
+	std::ifstream inputFile;
+	inputFile.open(input);
+	std::string line;
+	std::string delimiter = ",";
+	if (inputFile.is_open())
+	{
+		while (std::getline(inputFile, line))
+		{
+			//end of x substring
+			line = line.erase(line.find('['), 1);
+			line = line.erase(line.find(']'), 1);
+			int pos1 = line.find(delimiter);
+			std::string x = line.substr(0, pos1);
+			//end of y substring
+			int pos2 = line.find(delimiter, pos1 + 1);
+			std::string y = line.substr(pos1+2, pos2-pos1-2);
+			//end of z substring
+			std::string z = line.substr(pos2+2, line.length()-pos2-2);
+
+			float fx = std::stof(x);
+			float fy = std::stof(y);
+			float fz = std::stof(z);
+			cv::Point3f point = cv::Point3f(fx,fy,fz);
+			pvector.push_back(point);
+			std::cout << line << '\n';
+		}
+		inputFile.close();
+	}
+	return pvector;
 }
