@@ -11,7 +11,7 @@ for ii=1:size(transformationMatricies,3)
     for jj=1:size(pointsOnTable,1) 
         tmp=[pointsOnTable(jj,:),1];
         transformationMatricies(:,:,ii);
-        tmp=tmp*transformationMatricies(:,:,ii);     
-        Ret(jj,:,ii)=tmp(1:3);
+        tmp2=transformationMatricies(:,:,ii)*tmp';
+        Ret(jj,:,ii)=tmp2(1:3)';
     end
 end
