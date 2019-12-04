@@ -18,7 +18,7 @@
 void ImshowResize(cv::Mat image, float resizefact, std::string windowname);
 void Mean(cv::Mat Means, std::vector<cv::Mat> rvecs);
 void StandardDeviation(cv::Mat SDs, std::vector<cv::Mat> vecs, cv::Mat Means);
-std::vector<cv::Point3f> loadCorners(std::string input);
+std::vector<std::vector<cv::Point3f>> loadCorners(std::string input);
 
 
 int main()
@@ -26,12 +26,11 @@ int main()
 	// ---------------------------------------------------------------------------------------------------------------
 	// START BY CONFIGURING THE INTERFACE WITH THE UEYE CAMERA
 	// ---------------------------------------------------------------------------------------------------------------
-	std::stringstream ss, folder;
+	std::stringstream ss,folder;
 	time_t t = time(NULL);
 	struct tm  curtime = *localtime(&t);
 	ss << "md D:\\Users\\Sanya\\Pictures\\uEye\\" << std::put_time(&curtime, "%d-%m-%Y_%Hh%Mm%Ss");
 	folder<<"D:\\Users\\Sanya\\Pictures\\uEye\\" << std::put_time(&curtime, "%d-%m-%Y_%Hh%Mm%Ss");
-	std::cout << std::endl<< ss.str();
 	system((ss.str()).c_str());
 
 	// Camera initialisation
@@ -55,20 +54,39 @@ int main()
 	cv::Mat gray_image;
 
 	//obj is the global coordinate of the corners
-	std::vector<cv::Point3f> obj;
 
-	std::ifstream input;
+	std::vector<std::vector<cv::Point3f>> obj;
+	std::vector<cv::Point3f > test;
+	obj = loadCorners(pointsFileLocation);
 
+	if (obj.size() != numBoards)
+	{
+		std::cout << "The number of boards in the file at pointsFileLocation is not consistent with the numBoards set up in Properties.hpp.";
+		char end;
+		std::cin >> end;
+		return -1;
+	}
 
+	for (int i = 0; i < obj.size(); i++)
+	{
+		if (obj[i].size() != numCornersHor*numCornersVer)
+		{
+			std::cout << "The number of points in the file at pointsFileLocation is not consistent with the horizontal and vertical number of corners set up in Properties.hpp.";
+			char end;
+			std::cin >> end;
+			return -1;
+		}
+	}
 
-	input.open("");
+	
 	for (int i = 0; i < board_size.height; i++)
 	{
 		for (int j = 0; j < board_size.width; j++)
 		{
-			obj.push_back(cv::Point3f(j*squareSizeInmm, i*squareSizeInmm, 0));
+			test.push_back(cv::Point3f(j*squareSizeInmm, i*squareSizeInmm, 0));
 		}
 	}
+	
 
 	//windows to show the results
 	cv::namedWindow("RGB captured image");
@@ -118,7 +136,7 @@ int main()
 				if (key == 13 || !requireUserInput)
 				{
 					image_points.push_back(corners);
-					object_points.push_back(obj);
+					object_points.push_back(obj[successes]);
 
 					std::cout << successes + 1 << "/" << numBoards << "            \r";
 					successes++;
@@ -140,7 +158,9 @@ int main()
 				return -1;
 		}
 
-		cv::Mat intrinsic = cv::Mat(3, 3, CV_64FC1);
+		cv::Mat intrinsic = (cv::Mat_<double>(3, 3) <<	9531.114356894088, 0, 1270.763815055078,
+														0, 9532.669317097114, 921.0488943332759,
+														0, 0, 1);
 		cv::Mat distCoeffs = cv::Mat(1,5, CV_64FC1);
 		std::vector<cv::Mat> rvecs;
 		std::vector<cv::Mat> tvecs;
@@ -150,7 +170,16 @@ int main()
 
 		cv::Mat errorsqr = cv::Mat(1, 1, CV_64FC1);
 
-		errorsqr.at<double>(0,0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs);
+		try
+		{
+			errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
+		}
+		catch (cv::Exception & e)
+		{
+			std::cerr << e.msg << std::endl; // output exception message
+		}
+
+		
 		
 		errorsqrvec.push_back(errorsqr);
 		for (int p = 0; p < numBoards; p++)
@@ -223,7 +252,7 @@ int main()
 
 
 
-	cv::waitKey(-1);
+ 	cv::waitKey(-1);
 
 	
 	cv::destroyWindow("RGB captured image");
@@ -283,37 +312,52 @@ void StandardDeviation(cv::Mat SDs, std::vector<cv::Mat> vecs, cv::Mat Means)
 	}
 }
 
-std::vector<cv::Point3f> loadCorners(std::string input)
+std::vector<std::vector<cv::Point3f>> loadCorners(std::string input)
 {
 	//TODO: write this function
-	std::vector<cv::Point3f> pvector;
+	std::vector<std::vector<cv::Point3f>> pvector;
+	pvector.resize(numBoards);
 	std::ifstream inputFile;
 	inputFile.open(input);
 	std::string line;
 	std::string delimiter = ",";
 	if (inputFile.is_open())
 	{
-		while (std::getline(inputFile, line))
-		{
-			//end of x substring
-			line = line.erase(line.find('['), 1);
-			line = line.erase(line.find(']'), 1);
-			int pos1 = line.find(delimiter);
-			std::string x = line.substr(0, pos1);
-			//end of y substring
-			int pos2 = line.find(delimiter, pos1 + 1);
-			std::string y = line.substr(pos1 + 2, pos2 - pos1 - 2);
-			//end of z substring
-			std::string z = line.substr(pos2 + 2, line.length() - pos2 - 2);
+		std::getline(inputFile, line);
+		if(line=="board"){
+			//std::getline(inputFile, line);
+			for (int i=0; i<numBoards; i++)
+			{
+				while (std::getline(inputFile, line)&& line != "board")
+				{
+					//end of x substring
+					line = line.erase(line.find('['), 1);
+					line = line.erase(line.find(']'), 1);
+					int pos1 = line.find(delimiter);
+					std::string x = line.substr(0, pos1);
+					//end of y substring
+					int pos2 = line.find(delimiter, pos1 + 1);
+					std::string y = line.substr(pos1 + 2, pos2 - pos1 - 2);
+					//end of z substring
+					std::string z = line.substr(pos2 + 2, line.length() - pos2 - 2);
 
-			float fx = std::stof(x);
-			float fy = std::stof(y);
-			float fz = std::stof(z);
-			cv::Point3f point = cv::Point3f(fx, fy, fz);
-			pvector.push_back(point);
-			std::cout << line << '\n';
+					float fx = std::stof(x);
+					float fy = std::stof(y);
+					float fz = std::stof(z);
+					cv::Point3f point = cv::Point3f(fx, fy, fz);
+					pvector[i].push_back(point);
+					std::cout << line << '\n';
+				}
+			}		
+		}	
+		else {
+			std::cout << "wrong file format";
 		}
 		inputFile.close();
+	}
+	else
+	{
+		std::cout << "wrong filepath";
 	}
 	return pvector;
 }

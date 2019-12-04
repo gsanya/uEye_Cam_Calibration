@@ -31,8 +31,8 @@ int main()
 
 	cv::Mat image;
 	cv::Mat gray_image;
-
-	std::vector<cv::Point3f> obj= loadCorners("D:/Users/Sanya/Drive/BME/BME_Mechatronika_MSc/2_semester/Projektfeladat/ueye_project/boardcoordinates.txt");
+	std::vector<cv::Point3f> obj;
+	//std::vector<cv::Point3f> obj= loadCorners("D:/Users/Sanya/Drive/BME/BME_Mechatronika_MSc/2_semester/Projektfeladat/ueye_project/boardcoordinates.txt");
 	for (int j = 0; j < numSquares; j++)
 		obj.push_back(cv::Point3f(squareSizeInmm*(j / numCornersHor), squareSizeInmm*(j%numCornersHor), 0.0f));
 
@@ -58,15 +58,15 @@ int main()
 	while (i < numBoards)
 	{
 		cv::cvtColor(image, gray_image, CV_BGR2GRAY);
-		ImshowResize(image, 0.5, "image");
+		ImshowResize(image, 0.25, "image");
 		bool found = cv::findChessboardCorners(gray_image, board_sz, corners, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 		if (found)
 		{
 			cv::cornerSubPix(gray_image, corners, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
 			cv::drawChessboardCorners(gray_image, board_sz, corners, found);
 		}
-		ImshowResize(gray_image, 0.5, "gray_image");
-		int key = cv::waitKey(1);
+		ImshowResize(gray_image, 0.25, "gray_image");
+		int key = cv::waitKey(0);
 		image = cv::imread(fileNames[i], CV_LOAD_IMAGE_COLOR);
 		if (key == 27)
 			return 0;
