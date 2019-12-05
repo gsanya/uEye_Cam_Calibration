@@ -1,0 +1,58 @@
+Camera initialized!
+pixel clock range: 38-344        increment: 0
+pixel range: 38
+Camera pixel clock succesfully set!
+FrameTimeRange: 0.111483-0.5     increment: 1e-06exposure range: 0.112705-209.935        increment: 0.0543158
+exposure: 209.935 [ms]
+Camera exposure succesfully set!
+Camera color mode succesfully set!
+Display mode succesfully set!
+Trigger mode succesfully set!
+Trigger mode: 0
+file read
+press enter to capture image
+image captured. procssing...
+pattern found press enter to save.
+pattern saved: 1/5
+press enter to capture image
+image captured. procssing...
+pattern found press enter to save.
+pattern saved: 2/5
+press enter to capture image
+image captured. procssing...
+pattern found press enter to save.
+pattern saved: 3/5
+press enter to capture image
+image captured. procssing...
+pattern found press enter to save.
+pattern saved: 4/5
+press enter to capture image
+image captured. procssing...
+pattern found press enter to save.
+pattern saved: 5/5
+Errorsquare:    0.677829
+intrinsics:
+[10097.09973368825, 0, 1300.350721642989;
+ 0, 9955.108627628046, 991.907941984882;
+ 0, 0, 1]
+distortion coeffs:
+[-3.458487002432753, 258.533523224652, 0.1076928061772704, 0.01725042273544205, -9442.14762062248]
+
+------------------------------------------------------Results------------------------------------------------------
+
+Mean of rvecsall:
+[-0.01498065541741737;
+ 0.5175854665474524;
+ -0.001570221203335501]
+Standard Deviation of rvecsall:
+[0.009242543984044997;
+ 0.5496440770022302;
+ 0.001168680799180128]
+Mean of tvecsall:
+[-28.69654406678162;
+ 26.66578161821027;
+ 705.750776266094]
+Standard Deviation of tvecsall:
+[3.306896057154407;
+ 0.07492420663468027;
+ 6.703040898265392]

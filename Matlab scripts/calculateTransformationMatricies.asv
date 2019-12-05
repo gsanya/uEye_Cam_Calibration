@@ -12,5 +12,5 @@ for ii=-n:n
    R=[cos(ii*increment),-sin(ii*increment),0;
       sin(ii*increment),cos(ii*increment),0;
       0,0,1];
-   Ret(:,:,ii+n+1)=[R,R*trans;0,0,0,1];
+   Ret(:,:,ii+n+1)=[R',R*trans;0,0,0,1];
 end

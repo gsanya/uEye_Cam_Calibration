@@ -3,12 +3,13 @@
 %If assymetric circle pattern: The middle point of the bottom left circle
 %is (0,0,0). (The second to left on the bottom will have negative z
 %coordinate)
+
 clear all;
 isChessBoard=true;
 if isChessBoard
     vertical=6;
     horizontal=8;
-    squareSize=6;
+    squareSize=8;
     for(ii=1:vertical)
         for(jj=1:horizontal)
             points((ii-1)*horizontal+jj,:)=[(jj-1)*squareSize,0,(ii-1)*squareSize];
@@ -29,7 +30,7 @@ else
     end
 end
 %calculating the transformation matricies:
-TrMats=calculateTransformationMatricies(deg2rad(5),4,[1;0;2]);
+TrMats=calculateTransformationMatricies(deg2rad(20),2,[4.25;0;20.2]);
 %calculating the points:
 GlobPoints=calculatePoints(points,TrMats);
 

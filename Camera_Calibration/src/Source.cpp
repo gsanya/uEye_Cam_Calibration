@@ -42,7 +42,6 @@ int main()
 	// INIT FOR CALIBRATION
 	// ---------------------------------------------------------------------------------------------------------------
 
-	int numSquares = numCornersHor * numCornersVer;
 	cv::Size board_size = cv::Size(numCornersHor, numCornersVer);
 
 	std::vector<std::vector<cv::Point3f>> object_points;
@@ -59,6 +58,7 @@ int main()
 	std::vector<cv::Point3f > test;
 	obj = loadCorners(pointsFileLocation);
 
+	//consistency checks
 	if (obj.size() != numBoards)
 	{
 		std::cout << "The number of boards in the file at pointsFileLocation is not consistent with the numBoards set up in Properties.hpp.";
@@ -77,15 +77,6 @@ int main()
 			return -1;
 		}
 	}
-
-	
-	for (int i = 0; i < board_size.height; i++)
-	{
-		for (int j = 0; j < board_size.width; j++)
-		{
-			test.push_back(cv::Point3f(j*squareSizeInmm, i*squareSizeInmm, 0));
-		}
-	}
 	
 
 	//windows to show the results
@@ -101,7 +92,7 @@ int main()
 	std::vector<cv::Mat> errorsqrvec;
 
 	int key = 0;
-	bool first = true;
+	
 	// ---------------------------------------------------------------------------------------------------------------
 	// CAPTURE DATA AND PROCESS
 	// ---------------------------------------------------------------------------------------------------------------
@@ -111,19 +102,21 @@ int main()
 		
 		while (successes < numBoards)
 		{
-			//grab a frame
-			getFrame(&hCam, 2048, 2048, current_image);
-
+			bool enterPressed = false;
+			//grab a frame when enter is pressed	(press enter for a little longer)	
+			std::cout << "press enter to capture image\n";
+			do{
+				getFrame(&hCam, 2048, 2048, current_image);
+				ImshowResize(current_image, resizeFactor, "RGB captured image");
+				if(cv::waitKey(1000)==13)
+					enterPressed = true;
+			} while (!enterPressed || !requireUserInput);
+			std::cout << "image captured. procssing...\n";
 			cv::cvtColor(current_image, gray_image, CV_BGR2GRAY);
-			ImshowResize(current_image, resizeFactor, "RGB captured image");
-			if (first)
-			{
-				cv::waitKey(0);
-				first = false;
-			}
 			bool found = cv::findChessboardCorners(gray_image, board_size, corners, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 			if (found)
 			{
+				std::cout << "pattern found press enter to save.\n";
 				cv::cornerSubPix(gray_image, corners, cv::Size(11, 11), cv::Size(-1, -1), cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
 				cv::drawChessboardCorners(gray_image, board_size, corners, found);
 				ImshowResize(gray_image, resizeFactor, "BnW with corners");
@@ -133,12 +126,13 @@ int main()
 				{
 					key = cv::waitKey(0);
 				}
+				//add found 
 				if (key == 13 || !requireUserInput)
 				{
 					image_points.push_back(corners);
 					object_points.push_back(obj[successes]);
 
-					std::cout << successes + 1 << "/" << numBoards << "            \r";
+					std::cout <<"pattern saved: " <<successes + 1 << "/" << numBoards << "\n";
 					successes++;
 					std::stringstream ss;
 					ss.str("");
@@ -151,33 +145,63 @@ int main()
 			}
 			else
 			{
-				std::cout << "not found     \r";
+				std::cout << "pattern not found     \r";
 			}
 			//if escapes is pressed we quit
 			if (key == 27)
 				return -1;
 		}
 
-		cv::Mat intrinsic = (cv::Mat_<double>(3, 3) <<	9531.114356894088, 0, 1270.763815055078,
-														0, 9532.669317097114, 921.0488943332759,
-														0, 0, 1);
+//		
+
+//		[10043.26386153522, 0, 1338.099919383922;
+//		0, 9897.809152447015, 960.1074820443306;
+//		0, 0, 1]
+
+
+		cv::Mat intrinsic;
+
+		if (onlyIntrinsics)
+		{
+			intrinsic = cv::Mat(3, 3, CV_64FC1);
+			intrinsic.ptr<double>(0)[0] = 1;
+			intrinsic.ptr<double>(1)[1] = 1;
+		}
+		else
+		{
+			intrinsic = (cv::Mat_<double>(3, 3) <<	9877.010048783412, 0, 738.2628801098293,
+													0, 9852.921209084547, 1235.48028833685,
+													0, 0, 1);
+		}
+
 		cv::Mat distCoeffs = cv::Mat(1,5, CV_64FC1);
 		std::vector<cv::Mat> rvecs;
 		std::vector<cv::Mat> tvecs;
-
-		intrinsic.ptr<double>(0)[0] = 1;
-		intrinsic.ptr<double>(1)[1] = 1;
-
 		cv::Mat errorsqr = cv::Mat(1, 1, CV_64FC1);
 
-		try
+		if (onlyIntrinsics)
 		{
-			errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
+			try
+			{
+				errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs);
+			}
+			catch (cv::Exception & e)
+			{
+				std::cerr << e.msg << std::endl; // output exception message
+			}
 		}
-		catch (cv::Exception & e)
+		else
 		{
-			std::cerr << e.msg << std::endl; // output exception message
+			try
+			{
+				errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
+			}
+			catch (cv::Exception & e)
+			{
+				std::cerr << e.msg << std::endl; // output exception message
+			}
 		}
+		
 
 		
 		
@@ -190,6 +214,8 @@ int main()
 
 		intrinsicvec.push_back(intrinsic);
 		distcoeffvec.push_back(distCoeffs);
+
+		std::cout << "\n------------------------------------------------------Results------------------------------------------------------\n\n";
 
 		std::cout <<"Errorsquare:\t"<<errorsqr.at<double>(0,0) <<"\nintrinsics:\n"<<intrinsic<<"\ndistortion coeffs:\n"<<distCoeffs<<std::endl;
 
@@ -222,19 +248,18 @@ int main()
 	StandardDeviation(Trans_SDs, tvecsall, Trans_means);
 	
 
-	std::cout << "\n------------------------------------------------------Results------------------------------------------------------\n\n";
-	std::cout << "Mean of error squares:\t" << errorsqr_mean.at<double>(0,0) << std::endl;
-	std::cout << "SD of error squares:\t" << errorsqr_SD.at<double>(0, 0) << std::endl;
-	std::cout << "Mean of intrinsics:\n" << Intrinsic_means << std::endl;
-	std::cout << "SD of intrinsics:\n" << Intrinsic_SDs << std::endl;
-	std::cout << "Mean of distcoeffs:\n" << Distcoeffs_means << std::endl;
-	std::cout << "SD of distcoeffs:\n" << Distcoeffs_SDs << std::endl;
-
-	//calculate the mean and the standard deviation of each position (rotation and translation)
+	std::cout << "\n------------------------------------------------------Result means and SDs------------------------------------------------------\n\n";
 	
-
-	
-	
+	//It has only meaning if we calibrate more times 
+	if (numRuns > 1)
+	{
+		std::cout << "Mean of error squares:\t" << errorsqr_mean.at<double>(0, 0) << std::endl;
+		std::cout << "SD of error squares:\t" << errorsqr_SD.at<double>(0, 0) << std::endl;
+		std::cout << "Mean of intrinsics:\n" << Intrinsic_means << std::endl;
+		std::cout << "SD of intrinsics:\n" << Intrinsic_SDs << std::endl;
+		std::cout << "Mean of distcoeffs:\n" << Distcoeffs_means << std::endl;
+		std::cout << "SD of distcoeffs:\n" << Distcoeffs_SDs << std::endl;
+	}
 	std::cout << "Mean of rvecsall:\n" << Rot_means << std::endl;
 	std::cout << "Standard Deviation of rvecsall:\n" << Rot_SDs << std::endl;
 	std::cout << "Mean of tvecsall:\n" << Trans_means << std::endl;
@@ -346,18 +371,18 @@ std::vector<std::vector<cv::Point3f>> loadCorners(std::string input)
 					float fz = std::stof(z);
 					cv::Point3f point = cv::Point3f(fx, fy, fz);
 					pvector[i].push_back(point);
-					std::cout << line << '\n';
 				}
 			}		
 		}	
 		else {
-			std::cout << "wrong file format";
+			std::cout << "wrong file format\n";
 		}
+		std::cout << "file read\n";
 		inputFile.close();
 	}
 	else
 	{
-		std::cout << "wrong filepath";
+		std::cout << "wrong filepath or file doesn't exists\n";
 	}
 	return pvector;
 }

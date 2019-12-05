@@ -11,7 +11,7 @@
 
 #include "LoadImage.hpp"
 
-
+#define saves 0
 
 
 int main()
@@ -30,7 +30,7 @@ int main()
 	// ---------------------------------------------------------------------------------------------------------------
 
 	int i = 0;
-	while (i<11) {
+	while (i<saves) {
 		// Create an image and grab a frame
 		cv::Mat current_image(2048, 2048, CV_8UC3);
 		getFrame(&hCam, 2048, 2048, current_image);
