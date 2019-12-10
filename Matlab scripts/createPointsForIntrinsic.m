@@ -10,7 +10,7 @@ if isChessBoard
     squareSize=8;
     for(ii=1:vertical)
         for(jj=1:horizontal)
-            points((ii-1)*horizontal+jj,:)=[(jj-1)*squareSize,(ii-1)*squareSize,0];
+            points((ii-1)*horizontal+jj,:)=[(jj-1)*squareSize,(vertical-ii)*squareSize,0];
         end
     end
 else

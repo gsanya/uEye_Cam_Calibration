@@ -14,11 +14,11 @@ std::vector<cv::Point3f> loadCorners(std::string input);
 
 int main()
 {
-	int numBoards = 11;
+	int numBoards = 44;
 	//inner corners
-	int numCornersHor =6;
-	int numCornersVer = 4;
-	double squareSizeInmm =30;
+	int numCornersHor =8;
+	int numCornersVer = 6;
+	double squareSizeInmm =8;
 
 	int numSquares = numCornersHor * numCornersVer;
 	cv::Size board_sz = cv::Size(numCornersHor, numCornersVer);
@@ -39,14 +39,14 @@ int main()
 	//create a String vector with the filenames
 	std::vector<std::string> fileNames;
 	//I have 30 pictures
-	fileNames.reserve(30);
+	fileNames.reserve(numBoards);
 	std::stringstream ss;
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < numBoards; i++)
 	{
 		if(i<9)
-			ss << "D:/Users/Sanya/Pictures/uEye/12-11-2019_11h14m24s/0" << i + 1 << ".png";
+			ss << "../for_calibration/0" << i + 1 << ".png";
 		else
-			ss << "D:/Users/Sanya/Pictures/uEye/12-11-2019_11h14m24s/" << i + 1 << ".png";
+			ss << "../for_calibration/" << i + 1 << ".png";
 		fileNames.push_back(ss.str());
 		ss.str("");
 		std::cout << fileNames[i] << std::endl;
@@ -92,10 +92,14 @@ int main()
 
 	cv::calibrateCamera(object_points, image_points, image.size(), intrinsic, distCoeffs, rvecs, tvecs);
 	std::cout << "intrinsics:\n" << intrinsic << std::endl;
-	std::cout << "distCoeffs:\n" << distCoeffs << std::endl;
-	std::cout << "rvecs:\n" << rvecs[0] << std::endl;
-	std::cout << "tvecs:\n[" << tvecs[0] << std::endl;
+	std::cout << "distCoeffs:\n" << distCoeffs << std::endl;;
 
+	std::cout << "\n------------------------------------------------------Printing all of tvecs:------------------------------------------------------\n";
+	for (int i = 0; i < tvecs.size(); i++)
+	{
+		std::cout << tvecs[i] << std::endl;
+		std::cout << rvecs[i] << std::endl;
+	}
 
 
 	cv::waitKey(0);

@@ -33,6 +33,11 @@ int main()
 	folder<<"D:\\Users\\Sanya\\Pictures\\uEye\\" << std::put_time(&curtime, "%d-%m-%Y_%Hh%Mm%Ss");
 	system((ss.str()).c_str());
 
+	std::cout << "OpenCV version : " << CV_VERSION << std::endl;
+	std::cout << "Major version : " << CV_MAJOR_VERSION << std::endl;
+	std::cout << "Minor version : " << CV_MINOR_VERSION << std::endl;
+	std::cout << "Subminor version : " << CV_SUBMINOR_VERSION << std::endl;
+
 	// Camera initialisation
 	// Index 1 means taking the USB camera
 	HIDS hCam = 1;
@@ -111,7 +116,7 @@ int main()
 				if(cv::waitKey(1000)==13)
 					enterPressed = true;
 			} while (!enterPressed || !requireUserInput);
-			std::cout << "image captured. procssing...\n";
+			std::cout << "image captured. processing...\n";
 			cv::cvtColor(current_image, gray_image, CV_BGR2GRAY);
 			bool found = cv::findChessboardCorners(gray_image, board_size, corners, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 			if (found)
@@ -169,8 +174,8 @@ int main()
 		}
 		else
 		{
-			intrinsic = (cv::Mat_<double>(3, 3) <<	9877.010048783412, 0, 738.2628801098293,
-													0, 9852.921209084547, 1235.48028833685,
+			intrinsic = (cv::Mat_<double>(3, 3) <<	9709.819864652645, 0, 1080.865185087339,
+													0, 9720.449830896274, 944.9779849500916,
 													0, 0, 1);
 		}
 
@@ -265,13 +270,14 @@ int main()
 	std::cout << "Mean of tvecsall:\n" << Trans_means << std::endl;
 	std::cout << "Standard Deviation of tvecsall:\n" << Trans_SDs << std::endl;
 	
+	std::cout << "\n------------------------------------------------------Printing all of tvecs:------------------------------------------------------\n";
+	for (int i = 0; i < tvecsall.size(); i++)
+	{
+		std::cout << tvecsall[i] << std::endl;
+	}
 	
-	//TODO
-	//test if with assimetric circle pattern (it should be better)
-	//Here is some info
-	//https://docs.opencv.org/3.4/d4/d94/tutorial_camera_calibration.html
 
-	//fx=/=fy
+
 
 
 
