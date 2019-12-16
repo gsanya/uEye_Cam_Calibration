@@ -1,0 +1,2 @@
+példa--> módszer
+output leírás, értelmezés

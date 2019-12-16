@@ -9,6 +9,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgcodecs.hpp>
+#include <opencv2/calib3d.hpp>
 
 #include <ueye.h>
 
@@ -37,7 +38,7 @@ int main()
 	std::cout << "Major version : " << CV_MAJOR_VERSION << std::endl;
 	std::cout << "Minor version : " << CV_MINOR_VERSION << std::endl;
 	std::cout << "Subminor version : " << CV_SUBMINOR_VERSION << std::endl;
-
+	std::cout << "Working on point file : " << pointsFileLocation << std::endl;
 	// Camera initialisation
 	// Index 1 means taking the USB camera
 	HIDS hCam = 1;
@@ -60,7 +61,6 @@ int main()
 	//obj is the global coordinate of the corners
 
 	std::vector<std::vector<cv::Point3f>> obj;
-	std::vector<cv::Point3f > test;
 	obj = loadCorners(pointsFileLocation);
 
 	//consistency checks
@@ -110,10 +110,10 @@ int main()
 			bool enterPressed = false;
 			//grab a frame when enter is pressed	(press enter for a little longer)	
 			std::cout << "press enter to capture image\n";
-			do{
+			do {
 				getFrame(&hCam, 2048, 2048, current_image);
 				ImshowResize(current_image, resizeFactor, "RGB captured image");
-				if(cv::waitKey(1000)==13)
+				if (cv::waitKey(1000) == 13)
 					enterPressed = true;
 			} while (!enterPressed || !requireUserInput);
 			std::cout << "image captured. processing...\n";
@@ -137,15 +137,15 @@ int main()
 					image_points.push_back(corners);
 					object_points.push_back(obj[successes]);
 
-					std::cout <<"pattern saved: " <<successes + 1 << "/" << numBoards << "\n";
+					std::cout << "pattern saved: " << successes + 1 << "/" << numBoards << "\n";
 					successes++;
 					std::stringstream ss;
 					ss.str("");
 					if (successes < 10)
 						ss << folder.str() << "/0" << successes << ".png";
 					else
-						ss << folder.str() <<"/" << successes << ".png";
-					cv::imwrite(ss.str(), current_image);	
+						ss << folder.str() << "/" << successes << ".png";
+					cv::imwrite(ss.str(), current_image);
 				}
 			}
 			else
@@ -156,12 +156,6 @@ int main()
 			if (key == 27)
 				return -1;
 		}
-
-//		
-
-//		[10043.26386153522, 0, 1338.099919383922;
-//		0, 9897.809152447015, 960.1074820443306;
-//		0, 0, 1]
 
 
 		cv::Mat intrinsic;
@@ -174,21 +168,24 @@ int main()
 		}
 		else
 		{
-			intrinsic = (cv::Mat_<double>(3, 3) <<	9709.819864652645, 0, 1080.865185087339,
-													0, 9720.449830896274, 944.9779849500916,
+			intrinsic = (cv::Mat_<double>(3, 3) <<	9699.367579194281, 0, 1013.0560415461,
+													0, 9701.106378600216, 921.0251907490934,
 													0, 0, 1);
 		}
 
 		cv::Mat distCoeffs = cv::Mat(1,5, CV_64FC1);
-		std::vector<cv::Mat> rvecs;
-		std::vector<cv::Mat> tvecs;
+		std::vector<cv::Mat> rvecs_pnp;
+		std::vector<cv::Mat> tvecs_pnp;
+		rvecs_pnp.resize(numBoards);
+		tvecs_pnp.resize(numBoards);
+
 		cv::Mat errorsqr = cv::Mat(1, 1, CV_64FC1);
 
 		if (onlyIntrinsics)
 		{
 			try
 			{
-				errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs);
+				errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs_pnp, tvecs_pnp);
 			}
 			catch (cv::Exception & e)
 			{
@@ -199,22 +196,31 @@ int main()
 		{
 			try
 			{
-				errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
+				//errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
+				for (int i=0;i<numBoards;i++)
+					cv::solvePnPRansac(obj[i], image_points[i], intrinsic, distCoeffs, rvecs_pnp[i], tvecs_pnp[i]);
 			}
 			catch (cv::Exception & e)
 			{
 				std::cerr << e.msg << std::endl; // output exception message
 			}
 		}
-		
-
-		
+		std::cout << "tvecs with pnp:\n";
+		for (int i = 0; i < numBoards; i++)
+		{			
+			std::cout << tvecs_pnp[i] << std::endl;
+		}
+		std::cout << "rvecs with pnp:\n";
+		for (int i = 0; i < numBoards; i++)
+		{			
+			std::cout << rvecs_pnp[i] << std::endl;
+		}
 		
 		errorsqrvec.push_back(errorsqr);
 		for (int p = 0; p < numBoards; p++)
 		{
-			rvecsall.push_back(rvecs[p]);
-			tvecsall.push_back(tvecs[p]);
+			rvecsall.push_back(rvecs_pnp[p]);
+			tvecsall.push_back(tvecs_pnp[p]);
 		}
 
 		intrinsicvec.push_back(intrinsic);

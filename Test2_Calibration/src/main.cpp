@@ -33,9 +33,15 @@ int main()
 	cv::Mat gray_image;
 	std::vector<cv::Point3f> obj;
 	//std::vector<cv::Point3f> obj= loadCorners("D:/Users/Sanya/Drive/BME/BME_Mechatronika_MSc/2_semester/Projektfeladat/ueye_project/boardcoordinates.txt");
+	for (int i = 0; i < numCornersVer; i++)
+	{
+		for (int j = 0; j < numCornersHor; j++)
+			obj.push_back(cv::Point3f(j*squareSizeInmm,(numCornersVer-i-1)*squareSizeInmm, 0.0f));
+	}
+	/*
 	for (int j = 0; j < numSquares; j++)
 		obj.push_back(cv::Point3f(squareSizeInmm*(j / numCornersHor), squareSizeInmm*(j%numCornersHor), 0.0f));
-
+		*/
 	//create a String vector with the filenames
 	std::vector<std::string> fileNames;
 	//I have 30 pictures
@@ -44,9 +50,9 @@ int main()
 	for (int i = 0; i < numBoards; i++)
 	{
 		if(i<9)
-			ss << "../for_calibration/0" << i + 1 << ".png";
+			ss << "../for_calibration/1_44/0" << i + 1 << ".png";
 		else
-			ss << "../for_calibration/" << i + 1 << ".png";
+			ss << "../for_calibration/1_44/" << i + 1 << ".png";
 		fileNames.push_back(ss.str());
 		ss.str("");
 		std::cout << fileNames[i] << std::endl;
@@ -98,6 +104,10 @@ int main()
 	for (int i = 0; i < tvecs.size(); i++)
 	{
 		std::cout << tvecs[i] << std::endl;
+	}
+	std::cout << "\n------------------------------------------------------Printing all of rvecs:------------------------------------------------------\n";
+	for (int i = 0; i < rvecs.size(); i++)
+	{
 		std::cout << rvecs[i] << std::endl;
 	}
 

@@ -11,7 +11,7 @@
 
 #include "LoadImage.hpp"
 
-#define saves 44
+#define saves 50
 
 
 int main()

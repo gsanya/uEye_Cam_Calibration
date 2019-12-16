@@ -1,0 +1,368 @@
+cv::SOLVEPNP_EPNP
+folder:11-12-2019_11h49m24s
+
+
+
+
+OpenCV version : 3.4.0
+Major version : 3
+Minor version : 4
+Subminor version : 0
+Working on point file : ../Matlab scripts/points.txt
+Camera initialized!
+pixel clock range: 38-344        increment: 0
+pixel range: 38
+Camera pixel clock succesfully set!
+FrameTimeRange: 0.111483-0.5     increment: 1e-06exposure range: 0.112705-209.935        increment: 0.0543158
+exposure: 209.935 [ms]
+Camera exposure succesfully set!
+Camera color mode succesfully set!
+Display mode succesfully set!
+Trigger mode succesfully set!
+Trigger mode: 0
+file read
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 1/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 2/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 3/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 4/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 5/5
+tvecs with pnp:
+[-961.5904521687246;
+ -1194.169812449586;
+ 364.8047556413372]
+[-435.1866284496315;
+ -568.4374990179138;
+ 169.8491453245143]
+[-24.42766459128629;
+ -111.2090833037605;
+ 23.93868538490377]
+[-299.7957473798684;
+ -401.8657610372875;
+ 118.1600617085493]
+[-439.5844290758779;
+ -546.0487737918944;
+ 155.2363102648577]
+rvecs with pnp:
+[-1.021838137706757;
+ -1.938859996011284;
+ -1.68415117459239]
+[-0.6403533824739186;
+ -2.174117808654463;
+ -1.826943734670443]
+[0.4114073514506016;
+ 2.334972256097528;
+ 1.912727964544322]
+[-0.8299210497351047;
+ -1.263488674382774;
+ 1.28627667054239]
+[-0.4801279032438782;
+ 1.54590348441163;
+ 1.729752414812307]
+
+------------------------------------------------------Results------------------------------------------------------
+
+Errorsquare:    -6.27744e+66
+intrinsics:
+[9699.367579194281, 0, 1013.0560415461;
+ 0, 9701.106378600216, 921.0251907490934;
+ 0, 0, 1]
+distortion coeffs:
+[-6.277438562204192e+66, -6.277438562204192e+66, -6.277438562204192e+66, -6.277438562204192e+66, -6.277438562204192e+66]
+
+------------------------------------------------------Result means and SDs------------------------------------------------------
+
+Mean of rvecsall:
+[-0.5121666243418114;
+ -0.2991181477078727;
+ 0.2835324281272372]
+Standard Deviation of rvecsall:
+[0.5547927855884012;
+ 2.090270595446625;
+ 1.875980727220723]
+Mean of tvecsall:
+[-432.1169843330778;
+ -564.3461859200885;
+ 166.3977916648325]
+Standard Deviation of tvecsall:
+[340.6342722658155;
+ 396.472715614151;
+ 124.6227200562878]
+
+------------------------------------------------------Printing all of tvecs:------------------------------------------------------
+[-961.5904521687246;
+ -1194.169812449586;
+ 364.8047556413372]
+[-435.1866284496315;
+ -568.4374990179138;
+ 169.8491453245143]
+[-24.42766459128629;
+ -111.2090833037605;
+ 23.93868538490377]
+[-299.7957473798684;
+ -401.8657610372875;
+ 118.1600617085493]
+[-439.5844290758779;
+ -546.0487737918944;
+ 155.2363102648577]
+
+
+
+cv::SOLVEPNP_ITERATIVE
+folder:11-12-2019_11h50m44s
+
+
+
+OpenCV version : 3.4.0
+Major version : 3
+Minor version : 4
+Subminor version : 0
+Working on point file : ../Matlab scripts/points.txt
+Camera initialized!
+pixel clock range: 38-344        increment: 0
+pixel range: 38
+Camera pixel clock succesfully set!
+FrameTimeRange: 0.111483-0.5     increment: 1e-06exposure range: 0.112705-209.935        increment: 0.0543158
+exposure: 209.935 [ms]
+Camera exposure succesfully set!
+Camera color mode succesfully set!
+Display mode succesfully set!
+Trigger mode succesfully set!
+Trigger mode: 0
+file read
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 1/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 2/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 3/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 4/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 5/5
+tvecs with pnp:
+[-93.78225765080401;
+ -114.75308415156;
+ 35.23210786854867]
+[-34.44191934979319;
+ -126.3285159503512;
+ 28.73224679023061]
+[-25.66137865278303;
+ -117.4819167950179;
+ 25.13774490929711]
+[-23.83461224811742;
+ -114.6830081845802;
+ 24.09300638612072]
+[-23.60348814113595;
+ -114.3815203867468;
+ 23.99416801902639]
+rvecs with pnp:
+[1.682754389972244;
+ 1.214165377990766;
+ 1.60405380031336]
+[-0.7320254039815445;
+ -2.201145387075401;
+ -1.863687307706021]
+[-0.2220073819375775;
+ -2.361849854010138;
+ -1.966916572577299]
+[-0.2013288138338176;
+ 2.296933555998457;
+ 1.912225519122398]
+[-0.5624887811926695;
+ 2.092548599005558;
+ 1.735105220621032]
+
+------------------------------------------------------Results------------------------------------------------------
+
+Errorsquare:    -6.27744e+66
+intrinsics:
+[9699.367579194281, 0, 1013.0560415461;
+ 0, 9701.106378600216, 921.0251907490934;
+ 0, 0, 1]
+distortion coeffs:
+[-6.277438562204192e+66, -6.277438562204192e+66, -6.277438562204192e+66, -6.277438562204192e+66, -6.277438562204192e+66]
+
+------------------------------------------------------Result means and SDs------------------------------------------------------
+
+Mean of rvecsall:
+[-0.007019198194673004;
+ 0.2081304583818482;
+ 0.2841561319546941]
+Standard Deviation of rvecsall:
+[0.9712738261184184;
+ 2.309526210848404;
+ 2.011128588918141]
+Mean of tvecsall:
+[-40.26473120852672;
+ -117.5256090936512;
+ 27.4378547946447]
+Standard Deviation of tvecsall:
+[30.24415030180746;
+ 5.07803225729092;
+ 4.763489440198905]
+
+------------------------------------------------------Printing all of tvecs:------------------------------------------------------
+[-93.78225765080401;
+ -114.75308415156;
+ 35.23210786854867]
+[-34.44191934979319;
+ -126.3285159503512;
+ 28.73224679023061]
+[-25.66137865278303;
+ -117.4819167950179;
+ 25.13774490929711]
+[-23.83461224811742;
+ -114.6830081845802;
+ 24.09300638612072]
+[-23.60348814113595;
+ -114.3815203867468;
+ 23.99416801902639]
+
+
+solvePnPRansac
+folder:11-12-2019_11h52m44s
+
+
+OpenCV version : 3.4.0
+Major version : 3
+Minor version : 4
+Subminor version : 0
+Working on point file : ../Matlab scripts/points.txt
+Camera initialized!
+pixel clock range: 38-344        increment: 0
+pixel range: 38
+Camera pixel clock succesfully set!
+FrameTimeRange: 0.111483-0.5     increment: 1e-06exposure range: 0.112705-209.935        increment: 0.0543158
+exposure: 209.935 [ms]
+Camera exposure succesfully set!
+Camera color mode succesfully set!
+Display mode succesfully set!
+Trigger mode succesfully set!
+Trigger mode: 0
+file read
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 1/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 2/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 3/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 4/5
+press enter to capture image
+image captured. processing...
+pattern found press enter to save.
+pattern saved: 5/5
+tvecs with pnp:
+[-1085.68052989892;
+ -1338.877341113236;
+ 410.1874079100784]
+[-702.8098442191618;
+ -859.8778086371012;
+ 263.4615250676538]
+[-128.947940048099;
+ -163.2326600069242;
+ 49.35348245443195]
+[-309.2765422451161;
+ -411.8455834447537;
+ 121.5345742613235]
+[-304.6795068792018;
+ -406.6104352622614;
+ 119.8686125096914]
+rvecs with pnp:
+[-1.674728510773347;
+ -0.661617277900278;
+ 1.986293731660581]
+[-0.197573062751766;
+ -1.998256598173045;
+ -1.618147531080309]
+[1.016999958216693;
+ 1.666593630979121;
+ 1.253688723550328]
+[-0.9761606619031714;
+ -1.148611088214904;
+ 1.159601318305135]
+[-0.7335666136338768;
+ -1.262171256935561;
+ 0.8826402308491944]
+
+------------------------------------------------------Results------------------------------------------------------
+
+Errorsquare:    -6.27744e+66
+intrinsics:
+[9699.367579194281, 0, 1013.0560415461;
+ 0, 9701.106378600216, 921.0251907490934;
+ 0, 0, 1]
+distortion coeffs:
+[-6.277438562204192e+66, -6.277438562204192e+66, -6.277438562204192e+66, -6.277438562204192e+66, -6.277438562204192e+66]
+
+------------------------------------------------------Result means and SDs------------------------------------------------------
+
+Mean of rvecsall:
+[-0.5130057781690938;
+ -0.6808125180489334;
+ 0.732815294656986]
+Standard Deviation of rvecsall:
+[1.006624878895573;
+ 1.396706525681248;
+ 1.376057534266388]
+Mean of tvecsall:
+[-506.2788726580998;
+ -636.0887656928553;
+ 192.8811204406358]
+Standard Deviation of tvecsall:
+[386.0574951905083;
+ 466.5113940435278;
+ 144.2436783043258]
+
+------------------------------------------------------Printing all of tvecs:------------------------------------------------------
+[-1085.68052989892;
+ -1338.877341113236;
+ 410.1874079100784]
+[-702.8098442191618;
+ -859.8778086371012;
+ 263.4615250676538]
+[-128.947940048099;
+ -163.2326600069242;
+ 49.35348245443195]
+[-309.2765422451161;
+ -411.8455834447537;
+ 121.5345742613235]
+[-304.6795068792018;
+ -406.6104352622614;
+ 119.8686125096914]
