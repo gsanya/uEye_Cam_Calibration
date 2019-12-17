@@ -24,30 +24,22 @@ std::vector<std::vector<cv::Point3f>> loadCorners(std::string input);
 
 int main()
 {
-	// ---------------------------------------------------------------------------------------------------------------
-	// START BY CONFIGURING THE INTERFACE WITH THE UEYE CAMERA
-	// ---------------------------------------------------------------------------------------------------------------
+	//create folder to save results
 	std::stringstream ss,folder;
 	time_t t = time(NULL);
 	struct tm  curtime = *localtime(&t);
 	ss << "md D:\\Users\\Sanya\\Pictures\\uEye\\" << std::put_time(&curtime, "%d-%m-%Y_%Hh%Mm%Ss");
 	folder<<"D:\\Users\\Sanya\\Pictures\\uEye\\" << std::put_time(&curtime, "%d-%m-%Y_%Hh%Mm%Ss");
 	system((ss.str()).c_str());
-
+	//print some basic info
 	std::cout << "OpenCV version : " << CV_VERSION << std::endl;
-	std::cout << "Major version : " << CV_MAJOR_VERSION << std::endl;
-	std::cout << "Minor version : " << CV_MINOR_VERSION << std::endl;
-	std::cout << "Subminor version : " << CV_SUBMINOR_VERSION << std::endl;
 	std::cout << "Working on point file : " << pointsFileLocation << std::endl;
 	// Camera initialisation
 	// Index 1 means taking the USB camera
 	HIDS hCam = 1;
 	initializeCameraInterface(&hCam);
 
-	// ---------------------------------------------------------------------------------------------------------------
-	// INIT FOR CALIBRATION
-	// ---------------------------------------------------------------------------------------------------------------
-
+	//variables and vectors declaration
 	cv::Size board_size = cv::Size(numCornersHor, numCornersVer);
 
 	std::vector<std::vector<cv::Point3f>> object_points;
@@ -59,7 +51,6 @@ int main()
 	cv::Mat gray_image;
 
 	//obj is the global coordinate of the corners
-
 	std::vector<std::vector<cv::Point3f>> obj;
 	obj = loadCorners(pointsFileLocation);
 
@@ -83,7 +74,6 @@ int main()
 		}
 	}
 	
-
 	//windows to show the results
 	cv::namedWindow("RGB captured image");
 	cv::namedWindow("BnW with corners");
@@ -98,9 +88,7 @@ int main()
 
 	int key = 0;
 	
-	// ---------------------------------------------------------------------------------------------------------------
-	// CAPTURE DATA AND PROCESS
-	// ---------------------------------------------------------------------------------------------------------------
+	
 	for(int ii=0; ii<numRuns;ii++)
 	{
 		int successes = 0;
@@ -197,8 +185,7 @@ int main()
 		{
 			try
 			{
-				//errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
-				for (int i=0;i<numBoards;i++)
+				for (int i = 0; i < numBoards; i++)
 					cv::solvePnP(obj[i], image_points[i], intrinsic, distCoeffs, rvecs_pnp[i], tvecs_pnp[i]);
 			}
 			catch (cv::Exception & e)
@@ -206,18 +193,6 @@ int main()
 				std::cerr << e.msg << std::endl; // output exception message
 			}
 		}
-		/*
-		std::cout << "tvecs with pnp:\n";
-		for (int i = 0; i < numBoards; i++)
-		{			
-			std::cout << tvecs_pnp[i] << std::endl;
-		}
-		std::cout << "rvecs with pnp:\n";
-		for (int i = 0; i < numBoards; i++)
-		{			
-			std::cout << rvecs_pnp[i] << std::endl;
-		}
-		*/
 		errorsqrvec.push_back(errorsqr);
 		for (int p = 0; p < numBoards; p++)
 		{
@@ -228,7 +203,7 @@ int main()
 		intrinsicvec.push_back(intrinsic);
 		distcoeffvec.push_back(distCoeffs);
 
-		std::cout << "\n------------------------------------------------------Results------------------------------------------------------\n\n";
+		std::cout << "\n-----------Results-----------\n\n";
 
 		std::cout <<"Errorsquare:\t"<<errorsqr.at<double>(0,0) <<"\nintrinsics:\n"<<intrinsic<<"\ndistortion coeffs:\n"<<distCoeffs<<std::endl;
 
@@ -261,7 +236,7 @@ int main()
 	StandardDeviation(Trans_SDs, tvecsall, Trans_means);
 	
 
-	std::cout << "\n------------------------------------------------------Result means and SDs------------------------------------------------------\n\n";
+	std::cout << "\n------------Result means and SDs-----------\n\n";
 	
 	//It has only meaning if we calibrate more times 
 	if (numRuns > 1)
@@ -278,7 +253,7 @@ int main()
 	std::cout << "Mean of tvecsall:\n" << Trans_means << std::endl;
 	std::cout << "Standard Deviation of tvecsall:\n" << Trans_SDs << std::endl;
 	
-	std::cout << "\n------------------------------------------------------Printing all Cam positions:------------------------------------------------------\n";
+	std::cout << "\n-----------Printing all Cam positions:-----------\n";
 	for (int i = 0; i < tvecsall.size(); i++)
 	{
 		//std::cout << tvecsall[i] << std::endl;
@@ -291,7 +266,7 @@ int main()
 		T(cv::Range(0, 3), cv::Range(3, 4)) = tvec*1;
 		std::cout << T<<std::endl;
 	}
-	std::cout << "\n------------------------------------------------------Printing all Cam extrensics:------------------------------------------------------\n";
+	std::cout << "\n-----------Printing all Cam extrensics:-----------\n";
 	for (int i = 0; i < tvecsall.size(); i++)
 	{
 		//std::cout << tvecsall[i] << std::endl;
@@ -305,15 +280,7 @@ int main()
 		T = T.inv();
 		std::cout << T << std::endl;
 	}
-
-
-
-
-
-
  	cv::waitKey(-1);
-
-	
 	cv::destroyWindow("RGB captured image");
 	cv::destroyWindow("BnW with corners");
 	// Release the camera again
