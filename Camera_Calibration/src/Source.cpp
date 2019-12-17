@@ -157,11 +157,12 @@ int main()
 				return -1;
 		}
 
-
+		cv::Mat distCoeffs;
 		cv::Mat intrinsic;
 
 		if (onlyIntrinsics)
 		{
+			distCoeffs = cv::Mat(1, 5, CV_64FC1);
 			intrinsic = cv::Mat(3, 3, CV_64FC1);
 			intrinsic.ptr<double>(0)[0] = 1;
 			intrinsic.ptr<double>(1)[1] = 1;
@@ -171,9 +172,9 @@ int main()
 			intrinsic = (cv::Mat_<double>(3, 3) <<	9699.367579194281, 0, 1013.0560415461,
 													0, 9701.106378600216, 921.0251907490934,
 													0, 0, 1);
+			distCoeffs = (cv::Mat_<double>(1, 5) << -0.630886344735199, 68.87523133930196, 0.01357529425186616, 0.00247509168609643, -2247.768018156913);
 		}
 
-		cv::Mat distCoeffs = cv::Mat(1,5, CV_64FC1);
 		std::vector<cv::Mat> rvecs_pnp;
 		std::vector<cv::Mat> tvecs_pnp;
 		rvecs_pnp.resize(numBoards);
@@ -198,13 +199,14 @@ int main()
 			{
 				//errorsqr.at<double>(0, 0) = cv::calibrateCamera(object_points, image_points, current_image.size(), intrinsic, distCoeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
 				for (int i=0;i<numBoards;i++)
-					cv::solvePnPRansac(obj[i], image_points[i], intrinsic, distCoeffs, rvecs_pnp[i], tvecs_pnp[i]);
+					cv::solvePnP(obj[i], image_points[i], intrinsic, distCoeffs, rvecs_pnp[i], tvecs_pnp[i]);
 			}
 			catch (cv::Exception & e)
 			{
 				std::cerr << e.msg << std::endl; // output exception message
 			}
 		}
+		/*
 		std::cout << "tvecs with pnp:\n";
 		for (int i = 0; i < numBoards; i++)
 		{			
@@ -215,7 +217,7 @@ int main()
 		{			
 			std::cout << rvecs_pnp[i] << std::endl;
 		}
-		
+		*/
 		errorsqrvec.push_back(errorsqr);
 		for (int p = 0; p < numBoards; p++)
 		{
@@ -276,13 +278,33 @@ int main()
 	std::cout << "Mean of tvecsall:\n" << Trans_means << std::endl;
 	std::cout << "Standard Deviation of tvecsall:\n" << Trans_SDs << std::endl;
 	
-	std::cout << "\n------------------------------------------------------Printing all of tvecs:------------------------------------------------------\n";
+	std::cout << "\n------------------------------------------------------Printing all Cam positions:------------------------------------------------------\n";
 	for (int i = 0; i < tvecsall.size(); i++)
 	{
-		std::cout << tvecsall[i] << std::endl;
+		//std::cout << tvecsall[i] << std::endl;
+		cv::Mat rotM = cv::Mat(3, 3, CV_64FC1);
+		cv::Rodrigues(rvecsall[i],rotM);
+		rotM = rotM.t();
+		cv::Mat tvec = -rotM*tvecsall[i];
+		cv::Mat T = cv::Mat::eye(4, 4, CV_64FC1); 
+		T(cv::Range(0, 3), cv::Range(0, 3)) = rotM*1; 
+		T(cv::Range(0, 3), cv::Range(3, 4)) = tvec*1;
+		std::cout << T<<std::endl;
 	}
-	
-
+	std::cout << "\n------------------------------------------------------Printing all Cam extrensics:------------------------------------------------------\n";
+	for (int i = 0; i < tvecsall.size(); i++)
+	{
+		//std::cout << tvecsall[i] << std::endl;
+		cv::Mat rotM = cv::Mat(3, 3, CV_64FC1);
+		cv::Rodrigues(rvecsall[i], rotM);
+		rotM = rotM.t();
+		cv::Mat tvec = -rotM*tvecsall[i];
+		cv::Mat T = cv::Mat::eye(4, 4, CV_64FC1);
+		T(cv::Range(0, 3), cv::Range(0, 3)) = rotM * 1;
+		T(cv::Range(0, 3), cv::Range(3, 4)) = tvec * 1;
+		T = T.inv();
+		std::cout << T << std::endl;
+	}
 
 
 

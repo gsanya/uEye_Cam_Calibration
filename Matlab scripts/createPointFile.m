@@ -9,32 +9,17 @@
 %comment needs update
 
 clear all;
-isChessBoard=true;
-if isChessBoard
-    vertical=6;
-    horizontal=8;
-    squareSize=8;
-    for(ii=1:vertical)
-        for(jj=1:horizontal)
-            points((ii-1)*horizontal+jj,:)=[(jj-1)*squareSize,0,(vertical-ii)*squareSize];
-        end
-    end
-else
-    vertical =4;
-    horizontal =11;
-    pointDistance=8;
-     for(ii=1:vertical)
-        for(jj=1:horizontal)
-            if mod(jj,2)==0 %even
-                points((ii-1)*horizontal+jj,:)=[(jj-1)*(pointDistance/2),0,(ii-1)*pointDistance-(pointDistance/2)];
-            else%odd
-                points((ii-1)*horizontal+jj,:)=[(jj-1)*(pointDistance/2),0,(ii-1)*pointDistance];
-            end
-        end
+vertical=6;
+horizontal=8;
+squareSize=8;
+for(ii=1:vertical)
+    for(jj=1:horizontal)
+        points((ii-1)*horizontal+jj,:)=[(jj-1)*squareSize,0,(vertical-ii)*squareSize];
     end
 end
+
 %calculating the transformation matricies:
-TrMats=calculateTransformationMatricies(deg2rad(20),2,[12.382;0;28.019]);
+TrMats=calculateTransformationMatricies(deg2rad(15),2,[12.382;0;28.019]);
 %calculating the points:
 GlobPoints=calculatePoints(points,TrMats);
 
